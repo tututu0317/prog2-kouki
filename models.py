@@ -23,9 +23,14 @@ class MyModel(nn.Module):
 def test_accuracy(model, dataloder):
     n_corrects = 0
 
+    device = next(model.parameters()).device
+
     model.eval()
     with torch.no_grad():
         for image_batch, label_batch in dataloder:
+            # バッチを、modelと同じデバイスに転送する
+            image_batch = image_batch.to(device)
+            label_batch = label_batch.to(device)
 
             logits_batch = model(image_batch)
 
@@ -38,8 +43,12 @@ def test_accuracy(model, dataloder):
 
 def train(model, dataloder, loss_fn, optimizer):
 
+    device = next(model.parameters()).device
     model.train()
     for image_batch, label_batch in dataloder:
+        # バッチを、modelと同じデバイスに転送する
+        image_batch = image_batch.to(device)
+        label_batch = label_batch.to(device)
 
         logits_batch = model(image_batch)
 
